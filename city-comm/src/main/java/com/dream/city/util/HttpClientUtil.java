@@ -2,6 +2,8 @@ package com.dream.city.util;
 
 import com.dream.city.server.WebSocketServer;
 import com.dream.city.domain.Message;
+import com.dream.city.service.HttpClientService;
+import com.dream.city.service.impl.HttpClientServiceImpl;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
@@ -15,14 +17,36 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 
 import com.alibaba.fastjson.JSON;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wvv
  */
 public class HttpClientUtil {
+
+    private HttpClientService httpClientService= new HttpClientServiceImpl();
+
+    private static String getWayUrl;
+
+    public void postService(Message msg) {
+        httpClientService.post(msg);
+    }
+
     public static void post(Message msg) {
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        String url = "http://localhost:8081/"+msg.getTarget()+"/"+msg.getMessageType();
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        //网关地址
+        String gateWayUrl = "http://localhost:8020";
+        //网关路由
+        String gateRoutePath = msg.getData().getModel();
+        //模块地址
+        String serviceModel = msg.getData().getModel();
+        //请求模块操作行为
+        String serviceOpt = msg.getData().getType();
+
+        String url = gateWayUrl +"/"+ gateRoutePath + "/" + serviceModel + "/" + serviceOpt;
         // 创建Post请求
         HttpPost httpPost = new HttpPost(url);
 
@@ -38,7 +62,7 @@ public class HttpClientUtil {
         CloseableHttpResponse response = null;
         try {
             // 由客户端执行(发送)Post请求
-            response = httpClient.execute(httpPost);
+            response = client.execute(httpPost);
             // 从响应模型中获取响应实体
             HttpEntity responseEntity = response.getEntity();
 
@@ -49,7 +73,7 @@ public class HttpClientUtil {
                 String resp = EntityUtils.toString(responseEntity);
                 System.out.println("响应内容为:" + resp);
 
-                Message message = JSON.parseObject(resp,Message.class);
+                Message message = JSON.parseObject(resp, Message.class);
 
                 WebSocketServer.sendInfo(message);
             }
@@ -62,8 +86,8 @@ public class HttpClientUtil {
         } finally {
             try {
                 // 释放资源
-                if (httpClient != null) {
-                    httpClient.close();
+                if (client != null) {
+                    client.close();
                 }
                 if (response != null) {
                     response.close();

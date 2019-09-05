@@ -3,15 +3,15 @@ server:
 spring:
   application:
     name: city-server
-    port: 8888
+    port: 88888
 
 eureka:
   instance:
     hostname: localhost
     instance-id: ${spring.application.name}-${server.port}
   client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${spring.application.port}/eureka/
 

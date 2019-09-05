@@ -15,34 +15,28 @@ public class Message<T> implements Serializable{
 
     /**
      * 信息来源
-      */
+     */
     private String source;
-    // 消息类型
-    private String messageType;
-    // 消息内容
-    private T msgContent;
+    // 消息数据
+    private MessageData data;
     // 发送目的地
     private String target;
-    // 信息来源ip
-    private String infoSourceIP;
-    // 消息保存时间
+    // 消息时间
     private String createtime;
     // 其他信息
-    private String otherContent;
+    private String desc;
 
 
-    /*public Message(String sourse, String messageType, String msgContent,
-                       String target, String infoSourceIP, String createtime,
-                       String otherContent) {
+    public Message(String source, String target,
+                   MessageData data,String desc,
+                       String createtime) {
         super();
-        this.sourse = sourse;
-        this.messageType = messageType;
-        this.msgContent = msgContent;
+        this.source = source;
+        this.data = data;
+        this.desc = desc;
         this.target = target;
-        this.infoSourceIP = infoSourceIP;
         this.createtime = createtime;
-        this.otherContent = otherContent;
-    }*/
+    }
 
     /*@Override
     public String toString() {

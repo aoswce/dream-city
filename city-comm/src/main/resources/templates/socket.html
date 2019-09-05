@@ -11,7 +11,7 @@
         }else{
             console.log("您的浏览器支持WebSocket");
             //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
-            socket = new WebSocket("ws://192.168.0.111:8080/dream/city/");
+            socket = new WebSocket("ws://192.168.0.106:8010/dream/city/");
             //socket = new WebSocket("${basePath}websocket/${cid}".replace("http","ws"));
 
             //打开事件
@@ -27,11 +27,11 @@
 
                 var data = JSON.parse(msg.data);
                 console.log(data);
-                if (data.messageType == "init"){
+                if (data.data.type == "init"){
                     clientId = data.target;
                     document.getElementById("send").innerText="Send["+clientId+"]";
-                }else{
-                    var msg = data.msgContent;
+                }else if(data.data.type=="getValiCode"){
+                    var msg = data.data.t;
                     console.log(msg);
                 }
 
@@ -52,7 +52,11 @@
         }
         
         function send() {
-            var msg = "{\"source\":\""+clientId+"\",\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\",\"infoSourceIP\":\"client\",\"msgContent\":\"18826444048\",\"messageType\":\"getValiCode\",\"otherContent\":\"验证码\",\"target\":\"message\"}";
+            var msg = "{\"source\":\""+clientId+"\"," +
+                "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+                "\"data\":{\"type\":\"getValiCode\",\"model\":\"message\",\"data\":{}}," +
+                "\"desc\":\"验证码\",\"target\":\"server\"}";
+
             socket.send(msg);
         }
     </script>

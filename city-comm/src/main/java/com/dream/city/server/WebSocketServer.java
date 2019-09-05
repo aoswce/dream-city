@@ -2,10 +2,13 @@ package com.dream.city.server;
 
 import com.dream.city.domain.ApiSendObject;
 import com.dream.city.domain.Message;
+import com.dream.city.domain.MessageData;
+import com.dream.city.service.HttpClientService;
 import com.dream.city.util.HttpClientUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.utils.HttpClientUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -27,6 +30,9 @@ import com.alibaba.fastjson.JSONObject;
 @ServerEndpoint("/dream/city/")
 @Component
 public class WebSocketServer {
+
+    @Autowired
+    HttpClientService httpClientService;
 
     static Log log= LogFactory.getLog(WebSocketServer.class);
 
@@ -79,13 +85,15 @@ public class WebSocketServer {
             //String data = "{\"cmd\":\"init\",\"clientId\":\""+clientId+"\",\"msg\":\"连接成功\"}";
             //sendMessage(data);
             Message message=new Message();
-            message.setMessageType("init");
+            message.setSource("server");
             message.setTarget(clientId);
             message.setCreatetime(new Date().toString());
-            message.setInfoSourceIP("server");
-            message.setInfoSourceIP("client");
-            message.setMsgContent(clientId);
-            message.setOtherContent("连接成功");
+            message.setDesc("连接成功");
+            MessageData data = new MessageData();
+            data.setType("init");
+            data.setModel("socket");
+            data.setT(null);
+            message.setData(data);
             String msg = JSON.toJSON(message).toString();
             sendMessage(msg);
         } catch (IOException e) {
@@ -118,6 +126,8 @@ public class WebSocketServer {
             Message msg =  JSONObject.parseObject(message,Message.class);
             //请求restful接口，将数据发送给客户端
             HttpClientUtil.post((Message) msg);
+            //new HttpClientUtil().postService(msg);
+            //httpClientService.post(msg);
         }catch (Exception e){
             System.out.println("消息格式不正确！");
             e.printStackTrace();

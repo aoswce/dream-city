@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8050
 spring:
   application:
     name: city-message
@@ -10,7 +10,5 @@ eureka:
     hostname: localhost
     instance-id: ${spring.application.name}-${server.port}
   client:
-    register-with-eureka: false
-    fetch-registry: false
-    service-url:
+    serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
