@@ -1,9 +1,11 @@
 package com.dream.city.controller;
 
+import com.dream.city.domain.Message;
 import com.dream.city.service.CityMessageService;
 import com.dream.city.service.CityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +17,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/consumer")
-public class FeignController {
+public class ConsumerUserController {
     @Autowired
     CityUserService cityUserService;
 
@@ -41,4 +43,19 @@ public class FeignController {
         map.put("code",code);
         return map;
     }
+
+    /**
+     * 用户注册
+     */
+    @RequestMapping("/reg")
+    public Message reg(@RequestBody Message message){
+        Message msg = new Message();
+        String retUser = cityUserService.reg(message);
+        String retMsg = messageService.validCode();
+        if (retMsg.equals("success") && retUser.equals("success")){
+            return msg;
+        }
+        return msg;
+    }
+
 }

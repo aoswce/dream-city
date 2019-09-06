@@ -1,11 +1,14 @@
 package com.dream.city.service;
 
-import com.dream.city.entity.User;
-import org.springframework.beans.factory.annotation.Value;
+import com.dream.city.domain.entity.User;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author Wvv
  */
+@Repository
 public interface UserService {
 
     boolean saveUser(User user);
@@ -13,5 +16,7 @@ public interface UserService {
     void deleteUser(Integer uId);
 
     User updateUser(User user);
+
+    List<User> getUsers();
 
 }

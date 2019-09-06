@@ -124,6 +124,22 @@ public class WebSocketServer {
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             Message msg =  JSONObject.parseObject(message,Message.class);
+            //如果客户端发心跳包,回复success
+            if (((String)msg.getData().getT()).equals("ping")){
+                msg.setSource("server");
+                msg.setTarget(msg.getSource());
+                msg.setDesc("连接正常");
+                msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                MessageData data = new MessageData();
+                data.setType("ping");
+                data.setModel("socket");
+                data.setT("success");
+                msg.setData(data);
+                String msgRet = JSON.toJSON(msg).toString();
+                sendMessage(msgRet);
+                return;
+            }
+
             //请求restful接口，将数据发送给客户端
             HttpClientUtil.post((Message) msg);
             //new HttpClientUtil().postService(msg);

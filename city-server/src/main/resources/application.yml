@@ -1,9 +1,9 @@
 server:
-  port: 9999
+  port: 8888
 spring:
   application:
     name: city-server
-    port: 88888
+    port: 9999
 
 eureka:
   instance:

@@ -6,10 +6,8 @@ import com.dream.city.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
@@ -23,35 +21,35 @@ public class ValiCodeController {
     CodeService coderService;
 
     @RequestMapping("/getValiCode")
-    public Message getValiCode(@RequestBody Message msg ) {
+    public Message getValiCode(@RequestBody Message msg) {
         String code = String.valueOf(new Random().nextInt(999999));
         String target = msg.getTarget();
         msg.setTarget(msg.getSource());
         msg.setSource(target);
-        msg.setData(new MessageData("getValiCode","message",code));
+        msg.setData(new MessageData("getValiCode", "message", code));
         return msg;
     }
 
     @RequestMapping("/valiCode")
-    public Message valiCode(@RequestBody Message message){
-        Map<String,String> data = (Map<String, String>) message.getData().getT();
+    public Message valiCode(@RequestBody Message message) {
+        Map<String, String> data = (Map<String, String>) message.getData().getT();
         String code = data.get("code");
         String phone = data.get("phone");
 
-        boolean ret = coderService.valid(phone,code);
-        if(ret){
+        boolean ret = coderService.valid(phone, code);
+        if (ret) {
             return new Message(
                     message.getTarget(),
                     message.getSource(),
-                    new MessageData(message.getData().getType(),message.getData().getModel(),null),
+                    new MessageData(message.getData().getType(), message.getData().getModel(), null),
                     "验证成功！",
                     String.valueOf(System.currentTimeMillis())
             );
-        }else{
+        } else {
             return new Message(
                     message.getTarget(),
                     message.getSource(),
-                    new MessageData(message.getData().getType(),message.getData().getModel(),null),
+                    new MessageData(message.getData().getType(), message.getData().getModel(), null),
                     "验证失败！",
                     String.valueOf(System.currentTimeMillis())
             );
@@ -61,7 +59,7 @@ public class ValiCodeController {
     @RequestMapping("/get/code")
     public Message getCode() {
         String code = String.valueOf(new Random().nextInt(999999));
-        Message msg= new Message("source","target",new MessageData("testMsg","message",code),"this is msg",String.valueOf(System.currentTimeMillis()));
+        Message msg = new Message("source", "target", new MessageData("testMsg", "message", code), "this is msg", String.valueOf(System.currentTimeMillis()));
         return msg;
     }
 
