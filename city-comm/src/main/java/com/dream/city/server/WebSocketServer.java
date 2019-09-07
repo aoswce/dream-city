@@ -34,7 +34,7 @@ import com.alibaba.fastjson.JSONObject;
  * @author Wvv
  */
 
-@ServerEndpoint("/dream/city/{topic}/{myname}")
+@ServerEndpoint("/dream/city/{topic}/{name}")
 @Component
 public class WebSocketServer {
 
@@ -137,7 +137,7 @@ public class WebSocketServer {
      * @param message 客户端发送过来的消息
      */
     @OnMessage
-    public void onMessage(String message, Session session, @PathParam("topic") String topic, @PathParam("myname") String username) {
+    public void onMessage(String message, Session session, @PathParam("topic") String topic, @PathParam("name") String username) {
         log.info("收到来自窗口" + sid + "的信息:" + message + "/" + username);
 
         PublishServer publishService = SpringUtils.getBean(PublishServer.class);
@@ -151,6 +151,7 @@ public class WebSocketServer {
                 sendMessage("success");
                 return;
             }
+
             Message msg = JSONObject.parseObject(message, Message.class);
 
             if (((String) msg.getData().getT()).equals("order")) {
@@ -179,6 +180,8 @@ public class WebSocketServer {
             HttpClientUtil.post((Message) msg);
             //new HttpClientUtil().postService(msg);
             //httpClientService.post(msg);
+        }catch (IOException e){
+            e.printStackTrace();
         } catch (Exception e) {
             System.out.println("消息格式不正确！");
             e.printStackTrace();
@@ -186,13 +189,16 @@ public class WebSocketServer {
 
 
         //群发消息
-        /*for (WebSocketServer item : webSocketSet) {
+        for (WebSocketServer item : webSocketSet) {
             try {
-                item.sendMessage(message);
+                if(item.clientId == session.getId()){
+                    item.sendMessage(message);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
     }
 
     /**
