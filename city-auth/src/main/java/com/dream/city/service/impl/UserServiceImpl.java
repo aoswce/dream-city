@@ -1,14 +1,19 @@
-package com.dream.city.service;
+package com.dream.city.service.impl;
 
 import com.dream.city.domain.entity.User;
 import com.dream.city.domain.mapper.UserMapper;
+import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author Wvv
+ */
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserMapper userMapper;
 
